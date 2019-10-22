@@ -1,39 +1,19 @@
 const lugar = require('./lugar/lugar');
 const clima = require('./clima/clima.js');
-const argv = require('yargs').options({
-    direccion: {
-        alias: 'd',
-        desc: 'Dirección de la ciudad para obterner el clima',
-        demand: true
-    }
-}).argv;
+const mongoose = require('mongoose');
 
 
-
-let getInfo = async(direccion) => {
+let getInfo = async() => {
 
     try {
+        let temp = await clima.getClima();
 
-        let coors = await lugar.getLugarLatLng(direccion);
-        let temp = await clima.getClima(coors.lat, coors.lng);
-
-        return `El clima en ${coors.direccion}  es de ${temp}`
+        return temp
     } catch (e) {
-        return `No se pudo determinar el clima en ${direccion}`;
+        return `No se pudo determina`;
     }
 }
 
-getInfo(argv.direccion)
-    .then(mensaje => console.log(mensaje))
+getInfo()
+    .then(mensaje => console.log(mensaje.data))
     .catch(e => console.log(e));
-
-// lugar.getLugarLatLng(argv.direccion)
-//     .then(resp => {
-//         console.log(resp);
-
-//     })
-//     .catch(e => console.log(e));
-
-// clima.getClima(9.9280694, -84.0907246)
-//     .then(temp => console.log(temp))
-//     .catch(e => console.log(e));
