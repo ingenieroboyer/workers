@@ -61,6 +61,6 @@ let workersSchema = new Schema({
     firstname1: String,
     firstname2: String,
     company: String
-}, { collection: 'workers5' });
+}, { collection: 'workers' });
 
 module.exports = mongoose.model('workers', workersSchema);
