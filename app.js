@@ -49,41 +49,36 @@ let guardaJefe = async() => {
 
 
 
-    Workers.find(function(err, workers) {
-        if (!err) {
-            console.log("Antes de resolver");
-            console.dir(workers);
-            resolve(workers)
-        } else {
-            console.log("hay un error0 de resolver");
-            reject(err)
-        }
-    })
+    // Workers.find(function(err, workers) {
+    //     if (!err) {
+    //         console.log("Antes de resolver");
+    //         console.dir(workers);
+    //         resolve(workers)
+    //     } else {
+    //         console.log("hay un error0 de resolver");
+    //         reject(err)
+    //     }
+    // })
 
 
+    try {
+        console.log("Entra a buscar los trabajadores");
+
+        let trab = await Workers.find({});
+
+        console.log("Los trabajadores :" + trab);
+
+        // let temp = await concert.getJefe(ntuser);
+        // jefe = temp.data
+        // console.log("En jefe: " + jefe[0].Manager);
 
 
+        return trab
+    } catch (e) {
+        return `No se pudo determinar ${e}`;
+    }
 
 
-
-
-
-    // try {
-    //     console.log("Entra a buscar los trabajadores");
-
-    //     let trab = await Workers.find({});
-
-    //     console.log("Los trabajadores :" + trab);
-
-    //     // let temp = await concert.getJefe(ntuser);
-    //     // jefe = temp.data
-    //     // console.log("En jefe: " + jefe[0].Manager);
-
-
-    //     return trab
-    // } catch (e) {
-    //     return `No se pudo determinar ${e}`;
-    // }
 }
 guardaJefe()
     .then(mensaje => {
