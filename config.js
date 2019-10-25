@@ -1,4 +1,4 @@
 //var mongoose = require('mongoose');
 module.exports = {
-    'database': 'mongodb://127.0.0.1:27017/erme'
+    'database': 'mongodb://localhost:27017/pruebas'
 }

@@ -9,7 +9,6 @@ const Workers = require('../modelos/workers.js');
  */
 exports.addWorker = function(req, res) {
 
-    console.log('bodyyyyyy-----', req.body)
 
     const addWorker = (obj) => {
         return new Promise((resolve, reject) => {
@@ -29,6 +28,7 @@ exports.addWorker = function(req, res) {
         firstname2: req.body.firstname2,
         lastname1: req.body.lastname1,
         lastname2: req.body.lastname2,
+        ext:req.body.ext,
         rut: req.body.rut,
         sex: req.body.sex,
         company: req.body.company,
