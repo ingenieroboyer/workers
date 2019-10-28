@@ -65,9 +65,10 @@ module.exports = mongoose.model('Workers', new Schema({
     },
     DomainLogin:{
         type: String
+    },
+    ntuser:{
+        type: String
     }
-
-
 }, { timestamps: true })
 );
 

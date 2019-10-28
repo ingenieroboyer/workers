@@ -108,8 +108,7 @@ async function run() {
   await mongoose.connect('mongodb://localhost:27017/erme', { useNewUrlParser: true   });
   
   await Workers.find({}).
-  where('company').
-  equals('cdf').
+ 
   exec(function(err,docs){
 
     if(err){
@@ -118,78 +117,114 @@ async function run() {
 
 
     for (el in docs){
-    // console.log("espacio espacio");
     const email=docs[el]._doc.email;  
     const _id=docs[el]._id;
+    const company =docs[el].company ;
+    const ntuser=docs[el].ntuser; 
+
+    // console.log("revisando :"+docs);
+
+if (company==='cdf'){
+    let resp =  axios.get(` https://concertconsumer.turner.com/people?email=${email}`, {
+        responseType: 'json'
+      })
+        .then(async function (res) {
+          if(res.status==200) {
+              datadevuelta=res.data;
+              const department=datadevuelta[0].department;
+              const PSDepartmentID=datadevuelta[0].PSDepartmentID;
+              const Manager_loc=datadevuelta[0].Manager;
+              const Manager_id=datadevuelta[0].ManagerID;
+              const DomainLogin=datadevuelta[0].DomainLogin;
+
+              console.log("el _id :"+_id);
+              console.log("el correo :"+email);
+              console.log("department: "+department);
+
+              try {
+                const updatedWorker = await Workers.findByIdAndUpdate(
+                    _id,
+                    { $set: { Manager_ps:datadevuelta[0].Manager,
+                        Manager_id:Manager_id,
+                        PSDepartmentID:PSDepartmentID,
+                        department:department,
+                        DomainLogin:DomainLogin
+
+                    
+                    
+                    } }
+                );
+                console.log("El mensaje de update : "+updatedWorker);
+            } catch (e) {
+                return e;
+            }
+
+          }
+          else{
+              console.log("Softpeople no respondio");
+          }
+  
+        })
+        .catch(function (error) {
+            // handle error
+            console.log("Aquí se captura el error :"+error);
+            console.log(`El error proviene de evualar el ${email} `);
+          });
+}
 
 
-        let resp =  axios.get(` https://concertconsumer.turner.com/people?email=${email}`, {
-            responseType: 'json'
-          })
-            .then(async function (res) {
-              if(res.status==200) {
-                  datadevuelta=res.data;
-                  const department=datadevuelta[0].department;
-                  const PSDepartmentID=datadevuelta[0].PSDepartmentID;
-                  const Manager_loc=datadevuelta[0].Manager;
-                  const Manager_id=datadevuelta[0].ManagerID;
-                  const DomainLogin=datadevuelta[0].DomainLogin;
 
-                  console.log("el _id :"+_id);
-                  console.log("el correo :"+email);
-                  console.log("department: "+department);
+if (company==='cnn' || company==='chilevision'){
 
-                  try {
-                    const updatedWorker = await Workers.findByIdAndUpdate(
-                        _id,
-                        { $set: { Manager_ps:datadevuelta[0].Manager,
-                            Manager_id:Manager_id,
-                            PSDepartmentID:PSDepartmentID,
-                            department:department,
-                            DomainLogin:DomainLogin
+    console.log("evaluando con ntuser :"+ntuser);
+    let resp =  axios.get(` https://concertconsumer.turner.com/people?ntlogin=${ntuser}`, {
+        responseType: 'json'
+      })
+        .then(async function (res) {
+          if(res.status==200) {
+              datadevuelta=res.data;
+              const department=datadevuelta[0].department;
+              const PSDepartmentID=datadevuelta[0].PSDepartmentID;
+              const Manager_loc=datadevuelta[0].Manager;
+              const Manager_id=datadevuelta[0].ManagerID;
+              const DomainLogin=datadevuelta[0].DomainLogin;
 
-                        
-                        
-                        } }
-                    );
-                    console.log("El mensaje de update : "+updatedWorker);
-                } catch (e) {
-                    return e;
-                }
-        
-                  
-    //               console.log("_id: "+_id);
-    // console.log("department :"+department);
-    // console.log("La PSDepartmentID :"+PSDepartmentID);
-    // console.log("Manager_loc :"+Manager_loc);
-    // console.log("Manager_id:"+Manager_id);
+              console.log("el _id :"+_id);
+              console.log("el correo :"+email);
+              console.log("department: "+department);
+
+              try {
+                const updatedWorker = await Workers.findByIdAndUpdate(
+                    _id,
+                    { $set: { Manager_ps:datadevuelta[0].Manager,
+                        Manager_id:Manager_id,
+                        PSDepartmentID:PSDepartmentID,
+                        department:department,
+                        DomainLogin:DomainLogin
+
+                    
+                    
+                    } }
+                );
+                console.log("El mensaje de update : "+updatedWorker);
+            } catch (e) {
+                return e;
+            }
     
-    
-    //             Workers.findByIdAndUpdate(_id, function (err, doc) {
-    //   if (err) {
-    //       console.log('No pudo actualizar');
-    //   }
-    //   doc.name = 'jason bourne';
-    //   doc.save(callback);
-    //               });
-    
-                // var departamento =datadevuelta[0].department;
-                // var departamento =datadevuelta[0].department;
-    
-                // console.dir(datadevuelta[0]);
-              }
-              else{
-                  console.log("Softpeople no respondio");
-              }
+          }
+          else{
+              console.log("Softpeople no respondio");
+          }
 
-            //   console.log('el res :'+res[0].department);  
-            })
-            .catch(function (error) {
-                // handle error
-                console.log("Aquí se captura el error :"+error);
-                console.log(`El error proviene de evualar el ${email} `);
-              });
-    
+        //   console.log('el res :'+res[0].department);  
+        })
+        .catch(function (error) {
+            console.log("Aquí se captura el error :"+error);
+            console.log(`El error proviene de evualar el ${ntuser} `);
+          });
+
+}
+
   
 
 
