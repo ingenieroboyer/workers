@@ -113,7 +113,7 @@ exports.getWorker = function(req, res) {
     }).catch((err) => {
         return res.status(403).json(err)
     }).then(function(response) {
-        return res.status(200).json({ este: response })
+        return res.status(200).json({ data: response })
     })
 
     //////**  ESTA FUNCIÓN HAY QUE DEJARLA BAJO OBSERVACIÓN //////////////////

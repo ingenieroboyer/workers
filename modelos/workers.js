@@ -50,7 +50,23 @@ module.exports = mongoose.model('Workers', new Schema({
     },
     lab_union: {
         type: String
+    },
+    PSDepartmentID: {
+        type: String
+    },
+    Manager_id: {
+        type: String
+    },
+    Manager_ps: {
+        type: String
+    },
+    department:{
+        type: String
+    },
+    DomainLogin:{
+        type: String
     }
+
 
 }, { timestamps: true })
 );

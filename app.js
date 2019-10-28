@@ -108,59 +108,94 @@ async function run() {
   await mongoose.connect('mongodb://localhost:27017/erme', { useNewUrlParser: true   });
   
   await Workers.find({}).
-  where('company').equals('cdf').
+  where('company').
+  equals('cdf').
   exec(function(err,docs){
 
+    if(err){
+        console.log("Estamos en el caso de un error el query de mongo");
+    }
 
 
+    for (el in docs){
     // console.log("espacio espacio");
-    const email=docs[0]._doc.email;
-    const _id=docs[0]._id;
-
-    // console.log('el emael :'+email);
-
-    let resp =  axios.get(` https://concertconsumer.turner.com/people?email=${email}`, {
-        responseType: 'json'
-      })
-        .then(function(res) {
-          if(res.status==200) {
-              datadevuelta=res.data;
-
-              const department=datadevuelta[0].department;
-              const PSDepartmentID=datadevuelta[0].PSDepartmentID;
-              const Manager_loc=datadevuelta[0].Manager;
-              const Manager_id=datadevuelta[0].ManagerID;
+    const email=docs[el]._doc.email;  
+    const _id=docs[el]._id;
 
 
-            console.log("correo: "+email);
-            console.log("_id: "+_id);
-            console.log("department :"+department);
-            console.log("La PSDepartmentID :"+PSDepartmentID);
-            console.log("Manager_loc :"+Manager_loc);
-            console.log("Manager_id:"+Manager_id);
+        let resp =  axios.get(` https://concertconsumer.turner.com/people?email=${email}`, {
+            responseType: 'json'
+          })
+            .then(async function (res) {
+              if(res.status==200) {
+                  datadevuelta=res.data;
+                  const department=datadevuelta[0].department;
+                  const PSDepartmentID=datadevuelta[0].PSDepartmentID;
+                  const Manager_loc=datadevuelta[0].Manager;
+                  const Manager_id=datadevuelta[0].ManagerID;
+                  const DomainLogin=datadevuelta[0].DomainLogin;
 
+                  console.log("el _id :"+_id);
+                  console.log("el correo :"+email);
+                  console.log("department: "+department);
 
-            Workers.findByIdAndUpdate(_id, function (err, doc) {
-                if (err) {
-                    console.log('No pudo actualizar');
+                  try {
+                    const updatedWorker = await Workers.findByIdAndUpdate(
+                        _id,
+                        { $set: { Manager_ps:datadevuelta[0].Manager,
+                            Manager_id:Manager_id,
+                            PSDepartmentID:PSDepartmentID,
+                            department:department,
+                            DomainLogin:DomainLogin
+
+                        
+                        
+                        } }
+                    );
+                    console.log("El mensaje de update : "+updatedWorker);
+                } catch (e) {
+                    return e;
                 }
-                doc.name = 'jason bourne';
-                doc.save(callback);
+        
+                  
+    //               console.log("_id: "+_id);
+    // console.log("department :"+department);
+    // console.log("La PSDepartmentID :"+PSDepartmentID);
+    // console.log("Manager_loc :"+Manager_loc);
+    // console.log("Manager_id:"+Manager_id);
+    
+    
+    //             Workers.findByIdAndUpdate(_id, function (err, doc) {
+    //   if (err) {
+    //       console.log('No pudo actualizar');
+    //   }
+    //   doc.name = 'jason bourne';
+    //   doc.save(callback);
+    //               });
+    
+                // var departamento =datadevuelta[0].department;
+                // var departamento =datadevuelta[0].department;
+    
+                // console.dir(datadevuelta[0]);
+              }
+              else{
+                  console.log("Softpeople no respondio");
+              }
+
+            //   console.log('el res :'+res[0].department);  
+            })
+            .catch(function (error) {
+                // handle error
+                console.log("Aquí se captura el error :"+error);
+                console.log(`El error proviene de evualar el ${email} `);
               });
-
-            // var departamento =datadevuelta[0].department;
-            // var departamento =datadevuelta[0].department;
-
-            // console.dir(datadevuelta[0]);
-          }
-        //   console.log('el res :'+res[0].department);  
-        });
-   
+    
+  
 
 
 
-
-
+        // console.log("dcocumentos"+docs);
+    }
 
 
   })
