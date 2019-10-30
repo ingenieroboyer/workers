@@ -3,7 +3,7 @@ let Schema = mongoose.Schema;
 
 
 
-module.exports = mongoose.model('Workers', new Schema({
+module.exports = mongoose.model('Jefes', new Schema({
     admin: {
         type:Array
     },
@@ -72,15 +72,9 @@ module.exports = mongoose.model('Workers', new Schema({
     PersonStatus:{
         type:String
     },
-    ConcertID:{
-        type:String
-    },
-    JobTitle:{
+    PersonJobID:{
         type:String
     }
-    // PersonJobID:{
-    //     type:String
-    // }
 }, { timestamps: true })
 );
 
